@@ -140,16 +140,12 @@
 * **Time spent:** 40 minutes
 ---
 
-### Entry 2 - [Date and Time]
-**What I did**:
-
-**Details**:
-
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
+**Entry 2 - [November 9, 2026, 7:00 PM]**
+* **What I did:** Implemented Feature 1 (`ReentrantLock` in `ReadyQueue`).
+* **Details:** Added `lock` to protect `add()`, `poll()`, `processOf()`, and `snapshot()` using `try/finally`.
+* **Challenges:** I was not sure if `unlock()` works when `return` is inside the `try` block.
+* **Solution:** Tested the code and confirmed `finally` always runs before returning.
+* **Time spent:** 45 minutes
 
 ---
 
