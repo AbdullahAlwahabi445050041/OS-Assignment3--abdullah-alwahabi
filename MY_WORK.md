@@ -274,11 +274,14 @@
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[In my starter run (Student ID `445050041`), `Context switches` expected `31` but observed `19`, `Completed processes` expected `14` but observed `10`, and `Total service time` expected `98971` but observed `65410`. A lost update happens when `CPU-1` reads `contextSwitchCount` (say `10`) into `tmp` and pauses at `RaceWindow.pause()`, and at the same moment `CPU-2` also reads `10` into its `tmp` before `CPU-1` writes `11`. Both CPUs then write `10 + 1 = 11`, so one increment is lost. On a real machine without `RaceWindow`, the OS scheduler can still preempt a thread between reading a variable into a CPU register and writing it back to memory, which is very hard to detect because that timing window is only a few nanoseconds wide..]
 
 Verification block of the **original starter**:
 ```
-[Paste the verification block (or the exception/watchdog message) of the starter here]
+[Context switches (quanta executed)     expected 31       observed 19       ✘ MISMATCH
+Completed processes                    expected 14       observed 10       ✘ MISMATCH
+Total service time (ms)                expected 98971    observed 65410    ✘ MISMATCH
+Busy-waiting polls (must be 0)         expected 0        observed 8        ✘ MISMATCH]
 ```
 
 Verification block of **my final version**:
