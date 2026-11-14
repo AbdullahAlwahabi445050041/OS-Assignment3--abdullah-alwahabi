@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;// TODO (Feature 1 and Feature 2): import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.Semaphore;// TODO (Feature 3):               import java.util.concurrent.Semaphore;
+// TODO (Feature 1 and Feature 2): import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantLock;
+// TODO (Feature 3):               import java.util.concurrent.Semaphore;
+import java.util.concurrent.Semaphore;
 
 // ANSI Color Codes for enhanced terminal output (same as Assignment 1)
 class Colors {
@@ -62,8 +64,7 @@ class SharedStats {
 
     // TODO Feature 2: declare the lock(s) protecting the three shared variables above here.
     // Think about it: ONE lock for the three variables, or ONE lock PER variable? (you must justify it in MY_WORK.md)
-    
-    // سويت ٣ أقفال منفصلة عشان المعالجات تقدر تعدل المتغيرات في نفس الوقت وما تنتظر بعض
+    // سويت قفل لكل متغير عشان المعالجات ما تنتظر بعض اذا بتعدل متغيرات مختلفة
     private static final ReentrantLock lock1 = new ReentrantLock();
     private static final ReentrantLock lock2 = new ReentrantLock();
     private static final ReentrantLock lock3 = new ReentrantLock();
@@ -144,10 +145,10 @@ class ReadyQueue {
     private final Map<Thread, Process> map = new HashMap<>();     // thread -> process (same idea as Assignment 1)
 
     // TODO Feature 1: declare the lock protecting `list` and `map` here
-    private final ReentrantLock lock = new ReentrantLock(); // قفل واحد يحمي الطابور كامل
+    private final ReentrantLock lock = new ReentrantLock(); // قفل لحماية الطابور والماب
 
     // TODO Feature 3: declare the counting semaphore that counts the processes waiting in the ready queue here
-    public final Semaphore sem = new Semaphore(0); // خليته ببليك عشان استدعيه مباشرة، ويبدأ بصفر
+    public final Semaphore sem = new Semaphore(0); // سيمافور يبدأ بصفر عشان يوضح عدد العمليات الجاهزة
 
     // Add a process to the ready queue (new process, or a process that did not finish its quantum)
     public void add(Process process) {
@@ -159,14 +160,14 @@ class ReadyQueue {
             map.put(thread, process);
 
             // TODO Feature 3: signal that one more process is available in the queue
-            sem.release(); // نزيد السيمافور عشان نصحي المعالج لو كان نايم
+            sem.release(); // نرسل اشارة ان فيه عملية انضافت للطابور
 
             System.out.println(Colors.BLUE + "  ➕ " + Colors.BOLD + Colors.CYAN + process.getName() + Colors.RESET +
                     Colors.BLUE + " (Priority: " + process.getPriority() + ") added to ready queue" + Colors.RESET +
                     " │ Remaining: " + Colors.YELLOW + process.getRemainingTime() + "ms" + Colors.RESET +
                     " of " + process.getBurstTime() + "ms");
         } finally {
-            lock.unlock(); // نفك القفل دايما هنا
+            lock.unlock();
         }
     }
 
@@ -319,17 +320,15 @@ class CpuWorker extends Thread {
         while (SharedStats.getCompletedProcessCount() < SharedStats.totalProcesses) {
 
             // TODO Feature 3: replace this polling loop by a blocking wait on the counting semaphore
+            try {
+                readyQueue.sem.acquire(); // يوقف المعالج هنا لين تجي عملية بالطابور بدل ما يستهلك وقت
+            } catch (InterruptedException e) {
+                return;
+            }
+
             Thread thread = readyQueue.poll();
             if (thread == null) {
-                // ⚠️ BUSY WAITING: the CPU keeps checking an empty queue instead of sleeping until
-                // a process is available. It wastes CPU time and needs the "completed == total" test above to stop.
-                SharedStats.busyWaitPolls.incrementAndGet();      // (counted for the verification block)
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    return;
-                }
-                continue;
+                continue; // لو صحى المعالج عشان يقفل البرنامج والطابور فاضي يرجع لبداية اللوب ويطلع
             }
 
             Process process = readyQueue.processOf(thread);
@@ -351,6 +350,9 @@ class CpuWorker extends Thread {
 
             // TODO Feature 3: when the LAST process has completed, wake up the CPUs that are blocked on the
             // semaphore so that they can terminate (otherwise they would wait forever!)
+            if (SharedStats.getCompletedProcessCount() >= SharedStats.totalProcesses) {
+                readyQueue.sem.release(SharedStats.totalCPUs); // نصحي كل المعالجات عشان ينتهي البرنامج وما يعلق
+            }
         }
     }
 }
