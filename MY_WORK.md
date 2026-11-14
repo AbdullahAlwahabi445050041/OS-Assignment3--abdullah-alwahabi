@@ -193,13 +193,10 @@
 
 > 💡 **TIP:** Fill this in **last**, after all entries are written.
 
-**Total time spent on assignment**: [X hours]
-
-**Most challenging part**:
-
-**Most interesting learning**:
-
-**What I would do differently next time**:
+* **Total time spent on assignment:** 4 hours 
+* **Most challenging part:** Waking up the sleeping CPUs at the end of Feature 3 so the program terminates cleanly.
+* **Most interesting learning:** Seeing how `RaceWindow.pause()` exposes race conditions every time.
+* **What I would do differently next time:** Plan the semaphore shutdown logic before writing the code.
 
 ---
 
