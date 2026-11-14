@@ -307,12 +307,15 @@ Busy-waiting polls (must be 0)         expected 0        observed 0        ✔]
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[In `SharedStats`, I used three separate locks (`lock1`, `lock2`, `lock3`—one lock per variable) because the three counters are independent, allowing threads to update different counters at the same time (better concurrency), with the small trade-off of creating three lock objects instead of one. The `ReadyQueue` has its own separate `lock` so queue operations do not block threads that are only updating statistics in `SharedStats`. My code ensures **mutual exclusion** because only one thread can hold a lock at a time, and **progress** is guaranteed because locks are always unlocked in `finally` blocks. However, a default `ReentrantLock` is not fair, so **bounded waiting** is not strictly guaranteed if one thread keeps grabbing the lock first.]
 
 | Critical section (variable / method) | Lock used | Why it needs protection |
 |---|---|---|
-| [e.g., `ReadyQueue.poll()`] | [lock name] | [reason] |
-| [...] | [...] | [...] |
+| `ReadyQueue`: `list` & `map` in `add()`, `poll()`, `processOf()`, `snapshot()` | `lock` | Stops CPUs from picking the same process or crashing during queue iteration. |
+| `SharedStats.contextSwitchCount` in `incrementContextSwitch()` & `getContextSwitchCount()` | `lock1` | Prevents lost updates and dirty reads on the context switch counter. |
+| `SharedStats.completedProcessCount` in `incrementCompletedProcess()` & `getCompletedProcessCount()` | `lock2` | Protects the completed counter so CPUs know when all 14 processes are done. |
+| `SharedStats.totalServiceTime` in `addServiceTime()` & `getTotalServiceTime()` | `lock3` | Prevents lost additions when multiple CPUs add service time concurrently. |
+
 
 ## Question 3: Busy Waiting vs Semaphore
 
