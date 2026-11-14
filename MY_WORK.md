@@ -132,7 +132,7 @@
 
 ## Your Development Log
 
-**Entry 1 - [November 14, 2026, 5:15 PM]**
+**Entry 1 - [November 9, 2026, 5:15 PM]**
 * **What I did:** Forked the repo, set my student ID, and ran the starter code.
 * **Details:** Changed `studentID` to `445050041` on line 304 and saved the broken output.
 * **Challenges:** Multiple CPUs picked the same process and caused `IllegalThreadStateException`.
@@ -140,7 +140,7 @@
 * **Time spent:** 40 minutes
 ---
 
-**Entry 2 - [November 14, 2026, 7:00 PM]**
+**Entry 2 - [November 10, 2026, 7:00 PM]**
 * **What I did:** Implemented Feature 1 (`ReentrantLock` in `ReadyQueue`).
 * **Details:** Added `lock` to protect `add()`, `poll()`, `processOf()`, and `snapshot()` using `try/finally`.
 * **Challenges:** I was not sure if `unlock()` works when `return` is inside the `try` block.
@@ -149,7 +149,7 @@
 
 ---
 
-**Entry 3 - [November 14, 2026, 6:30 PM]**
+**Entry 3 - [November 11, 2026, 6:30 PM]**
 * **What I did:** Implemented Feature 2 (locks in `SharedStats`).
 * **Details:** Added `lock1`, `lock2`, and `lock3` to protect the three counters and their getters.
 * **Challenges:** I forgot to lock the getter methods at first.
@@ -158,7 +158,7 @@
 
 ---
 
-**Entry 4 - [November 14, 2026, 8:15 PM]**
+**Entry 4 - [November 13, 2026, 8:15 PM]**
 * **What I did:** Implemented Feature 3 (`Semaphore` in `ReadyQueue` and `CpuWorker`).
 * **Details:** Added `Semaphore sem = new Semaphore(0)`, called `release()` in `add()`, and `acquire()` in `CpuWorker`.
 * **Challenges:** The program hung at the end because one CPU stayed blocked on `sem.acquire()`.
@@ -216,7 +216,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[In this assignment, I learned how race conditions happen when multiple threads change shared data at the same time. In the starter code, updating counters and polling from the queue failed because threads interrupted each other during `RaceWindow.pause()`. I learned how to protect critical sections using `ReentrantLock` to guarantee mutual exclusion. I also learned that we must always put `unlock()` inside a `finally` block so the lock is released even if an error happens. Finally, I learned how a counting `Semaphore` puts threads to sleep when the queue is empty instead of wasting CPU time with busy waiting.]
 
 ## Question 2: What was the most challenging part of this assignment?
 
@@ -224,7 +224,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[The hardest part for me was Feature 3, especially stopping the CPUs cleanly at the end of the simulation. Replacing the `Thread.sleep(20)` loop with `readyQueue.sem.acquire()` was easy at first. However, when the last process finished, my program froze and the watchdog stopped it. I realized that one CPU was still sleeping inside `sem.acquire()` waiting for a process that would never come. To fix this, the last CPU had to call `sem.release(SharedStats.totalCPUs)` to wake up all sleeping CPUs so they could exit the `while` loop.]
 
 ## Question 3: How did you overcome the challenges you faced?
 
@@ -232,7 +232,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[I overcame these challenges by working step by step and testing after every small change. First, I read the `README.md` file and the `TODO` comments in the code very carefully. When the starter code crashed, I read the console output to see which method caused the error. When the program got stuck in Feature 3, I traced the `CpuWorker` loop and saw why the thread was still blocked. Running the program 5 times after each feature helped me make sure my synchronization worked every time.]
 
 ## Question 4: Where can synchronization concepts be applied in real-world applications?
 
@@ -240,7 +240,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[Synchronization is used in many real-world systems that handle multiple users at the same time. For example, bank apps use mutex locks during money transfers so two transactions do not corrupt an account balance, just like we protected `SharedStats`. Ticket booking websites use locks so two customers cannot buy the exact same seat at the same time, similar to `ReadyQueue.poll()`. Web servers and databases use counting semaphores to limit how many users can connect at once. Print queues also use semaphores so the printer sleeps until a new document is added.]
 
 ### Optional: What would you like to learn more about?
 
