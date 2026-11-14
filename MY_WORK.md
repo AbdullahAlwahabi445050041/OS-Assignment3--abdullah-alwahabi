@@ -347,13 +347,13 @@ Busy-waiting polls (must be 0)         expected 0        observed 0        ✔]
 ## Summary
 
 **Key concepts I understood through these questions:**
-1.
-2.
-3.
+1. How race conditions cause lost updates during read-modify-write steps.
+2. Using `ReentrantLock` with `try/finally` and choosing one lock per variable.
+3. Using a counting `Semaphore` to block threads instead of busy waiting.
 
 **Concepts I need to study more:**
-1.
-2.
+1. Deadlock avoidance methods in operating systems.
+2. Fair locks and condition variables in Java.
 
 ---
 
