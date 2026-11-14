@@ -325,7 +325,7 @@ Busy-waiting polls (must be 0)         expected 0        observed 0        ✔]
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[In the starter code, when the queue was empty, CPUs kept checking `poll()` and sleeping for 20ms in a loop (causing `8` busy-waiting polls in my run), which wastes CPU time. My semaphore `sem` counts the number of processes waiting in `ReadyQueue`; its initial value is `0` because the queue starts empty, and after the `14` initial `add()` calls in `main`, its value becomes `14`. When the queue is empty, `sem.acquire()` blocks the CPU thread until a process is added. When the last process finishes, the CPU calls `sem.release(SharedStats.totalCPUs)` to wake up the other sleeping CPU; otherwise, it would stay blocked forever and trigger the watchdog.]
 
 ## Question 4: Classical Problems and Deadlock
 
@@ -336,13 +336,13 @@ Busy-waiting polls (must be 0)         expected 0        observed 0        ✔]
 **Your Answer:** *(3-5 sentences)*
 
 **Classical problem and roles**:
-[Name the problem; who is the producer, who is the consumer?]
+[NThis is the **Producer-Consumer Problem**. The `main` thread is the initial **producer** (adding 14 processes), and the `CpuWorker` threads are both **consumers** (taking processes with `poll()`) and **producers** (re-adding unfinished processes with `add()`).]
 
 **Semaphores for a bounded queue (name and initial value)**:
-[Name the three semaphores and their initial values.]
+[For capacity `K`, we need 3 semaphores: `mutex = 1` (protects the queue), `empty = K` (counts free slots), and `full = 0` (counts ready processes)..]
 
 **Deadlock scenario and prevention**:
-[Describe the scenario and the necessary condition you would break.]
+[If a CPU locked `mutex` (`lock.lock()`) **before** calling `full.acquire()` (`sem.acquire()`) on an empty queue, it would sleep while holding the lock, blocking any other CPU from calling `add()` to release the semaphore. We prevent this deadlock by breaking the **Hold and Wait** condition: always call `sem.acquire()` before locking `lock`.]
 
 ## Summary
 
