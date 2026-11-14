@@ -132,17 +132,12 @@
 
 ## Your Development Log
 
-### Entry 1 - [Date and Time]
-**What I did**:
-
-**Details**:
-
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
-
+**Entry 1 - [November 8, 2026, 5:15 PM]**
+* **What I did:** Forked the repo, set my student ID, and ran the starter code.
+* **Details:** Changed `studentID` to `445050041` on line 304 and saved the broken output.
+* **Challenges:** Multiple CPUs picked the same process and caused `IllegalThreadStateException`.
+* **Solution:** Checked `ReadyQueue.poll()` and saw `RaceWindow.pause()` causing a race condition.
+* **Time spent:** 40 minutes
 ---
 
 ### Entry 2 - [Date and Time]
