@@ -286,11 +286,18 @@ Busy-waiting polls (must be 0)         expected 0        observed 8        ✘ M
 
 Verification block of **my final version**:
 ```
-[Paste the verification block of your final version here (all lines ✔)]
+[Context switches (quanta executed)     expected 31       observed 31       ✔
+Completed processes                    expected 14       observed 14       ✔
+Total service time (ms)                expected 98971    observed 98971    ✔
+Busy-waiting polls (must be 0)         expected 0        observed 0        ✔]
 ```
 
 **Explanation of the timeline:**
-[Explain the lost update step by step.]
+[1. `contextSwitchCount` is `10`.
+2. `CPU-1` reads `tmp = 10`, then pauses at `RaceWindow.pause()`.
+3. `CPU-2` reads `tmp = 10` at the same time, then pauses.
+4. `CPU-1` wakes up and writes `contextSwitchCount = 11`.
+5. `CPU-2` wakes up and writes `contextSwitchCount = 11` (one update is lost).]
 
 ## Question 2: Critical Sections and Lock Granularity
 
