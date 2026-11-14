@@ -132,55 +132,47 @@
 
 ## Your Development Log
 
-**Entry 1 - [November 8, 2026, 5:15 PM]**
- **What I did:** Forked the repo, set my student ID, and ran the starter code.
- **Details:** Changed `studentID` to `445050041` on line 304 and saved the broken output.
- **Challenges:** Multiple CPUs picked the same process and caused `IllegalThreadStateException`.
- **Solution:** Checked `ReadyQueue.poll()` and saw `RaceWindow.pause()` causing a race condition.
- **Time spent:** 40 minutes
+**Entry 1 - [November 14, 2026, 5:15 PM]**
+* **What I did:** Forked the repo, set my student ID, and ran the starter code.
+* **Details:** Changed `studentID` to `445050041` on line 304 and saved the broken output.
+* **Challenges:** Multiple CPUs picked the same process and caused `IllegalThreadStateException`.
+* **Solution:** Checked `ReadyQueue.poll()` and saw `RaceWindow.pause()` causing a race condition.
+* **Time spent:** 40 minutes
 ---
 
-**Entry 2 - [November 9, 2026, 7:00 PM]**
- **What I did:** Implemented Feature 1 (`ReentrantLock` in `ReadyQueue`).
- **Details:** Added `lock` to protect `add()`, `poll()`, `processOf()`, and `snapshot()` using `try/finally`.
- **Challenges:** I was not sure if `unlock()` works when `return` is inside the `try` block.
- **Solution:** Tested the code and confirmed `finally` always runs before returning.
- **Time spent:** 45 minutes
-
----
-
-**Entry 3 - [November 11, 2026, 6:30 PM]**
- **What I did:** Implemented Feature 2 (locks in `SharedStats`).
- **Details:** Added `lock1`, `lock2`, and `lock3` to protect the three counters and their getters.
- **Challenges:** I forgot to lock the getter methods at first.
- **Solution:** Added locks to all three getters so reads are also thread-safe.
- **Time spent:** 50 minutes
+**Entry 2 - [November 14, 2026, 7:00 PM]**
+* **What I did:** Implemented Feature 1 (`ReentrantLock` in `ReadyQueue`).
+* **Details:** Added `lock` to protect `add()`, `poll()`, `processOf()`, and `snapshot()` using `try/finally`.
+* **Challenges:** I was not sure if `unlock()` works when `return` is inside the `try` block.
+* **Solution:** Tested the code and confirmed `finally` always runs before returning.
+* **Time spent:** 45 minutes
 
 ---
 
-### Entry 4 - [Date and Time]
-**What I did**:
-
-**Details**:
-
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
+**Entry 3 - [November 14, 2026, 6:30 PM]**
+* **What I did:** Implemented Feature 2 (locks in `SharedStats`).
+* **Details:** Added `lock1`, `lock2`, and `lock3` to protect the three counters and their getters.
+* **Challenges:** I forgot to lock the getter methods at first.
+* **Solution:** Added locks to all three getters so reads are also thread-safe.
+* **Time spent:** 50 minutes
 
 ---
 
-### Entry 5 - [Date and Time]
-**What I did**:
+**Entry 4 - [November 14, 2026, 8:15 PM]**
+* **What I did:** Implemented Feature 3 (`Semaphore` in `ReadyQueue` and `CpuWorker`).
+* **Details:** Added `Semaphore sem = new Semaphore(0)`, called `release()` in `add()`, and `acquire()` in `CpuWorker`.
+* **Challenges:** The program hung at the end because one CPU stayed blocked on `sem.acquire()`.
+* **Solution:** Added `readyQueue.sem.release(SharedStats.totalCPUs)` when all processes finish to wake up blocked CPUs.
+* **Time spent:** 1 hour
 
-**Details**:
+---
 
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
+**Entry 5 - [November 14, 2026, 4:00 PM]**
+* **What I did:** Tested the code 5 times and wrote `MY_WORK.md`.
+* **Details:** Verified all 4 checks pass with `0` busy-wait polls and answered all questions.
+* **Challenges:** Writing clear explanations for deadlock and lock granularity.
+* **Solution:** Reviewed the Chapter 5 lecture slides and linked them to my code.
+* **Time spent:** 1 hour
 
 ---
 
